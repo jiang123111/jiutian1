@@ -1,0 +1,679 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <base href="http://www.gdedu.tv:80/"/>
+    <meta charset="UTF-8">
+    <title>兴趣课堂</title>
+
+    <script type="text/javascript" src="/js/jquery-1.7.2.min.js"></script>
+
+
+    <script type='text/javascript' src='/web/js/shaike.js'></script>
+    <link href="/css/Base.css" rel="stylesheet" type="text/css" />
+    <link href="/css/reset.css" rel="stylesheet" type="text/css" />
+    <link href="/web/css/jiaoyan.css" rel="stylesheet" type="text/css" />
+    <link href="/web/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/web/css/neiye.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" href="/favicon.ico" mce_href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" mce_href="/favicon.ico" type="image/x-icon">
+
+    <script type="text/javascript">
+
+        var ask = function(url){
+            if(confirm("确定要进行此操作哦？")){
+                location.href=url;
+            }
+        };
+        var toStudioIndex = function(id){
+            location.href = "studio!studioDetail.action?gdeduStudio.id="+id;
+        };
+        function isLogin(returnUrl){
+            //判断是否已登录
+            var userNameu = "null";
+            var thisHref = window.location.href;
+            //alert(userNameu+"******"+thisHref);
+            var rUl;
+            //alert(returnUrl);
+            if(typeof(returnUrl)!="undefined"&&typeof(returnUrl)!="null"&&"no"!=returnUrl){
+                rUl = returnUrl;
+            }else{
+                rUl= thisHref.substring(thisHref.lastIndexOf("/", thisHref.length)+1, thisHref.length);
+            }
+            //alert(rUl);
+            if("null"==userNameu){
+                if(confirm("您还未登录，不能进行操作！请先登录后操作，是否前往登录？")){
+                    location.href="/isLogin.action?returnUrl="+rUl;
+                }
+            }else{
+                var userType = "null";
+                if("share!screening.action"==rUl){
+                    if(userType < 3){
+                        alert("您没有该权限");
+                        return;
+                    }else{
+                        if("no"==returnUrl){
+                            return true;
+                        }else{
+                            location.href=rUl;
+                        };
+                    }
+                }else{
+                    if("no"==returnUrl){
+                        return true;
+                    }else{
+                        location.href=rUl;
+                    };
+                }
+            };
+        }
+    </script>
+
+    <link href="/css/style.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="http://www.gdedu.tv:80/js/jquery.js"></script>
+    <script type="text/javascript" src="http://www.gdedu.tv:80/web/js/jquery.tabso_yeso.js"></script>
+    <script type="text/javascript" src="http://www.gdedu.tv:80/web/js/public.js"></script>
+    <script type='text/javascript' src='http://www.gdedu.tv:80/web/js/dataUtil.js'></script>
+    <script type="text/javascript">
+
+        var submitLog = function(gradeId){
+            $("input[name='gradeId']").val(gradeId);
+            //alert($("input[name=gradeName]").val());
+            $("form[name='specialList']").submit();
+        };
+        var orderInput;
+        var orderBySpecial;
+        $(function(){
+            orderInput = $("input[name='order']");
+            orderBySpecial = $("input[name='orderBySpecial']");
+            //$(".tabbtn ul li").eq($("input[name='gradeId']").val()).find('a').css("onclick_color");
+            if(orderBySpecial.val().replace(/[ ]/g,"") ==  "hot"){
+                if(orderInput.val().replace(/[ ]/g,"") == 'desc')
+                    $("input[name='ztkthot']").removeClass("ztkthot").addClass("hot_top");
+                else{
+                    $("input[name='ztkthot']").removeClass("ztkthot").addClass("hot_dow");
+                }
+            }else{
+                if(orderInput.val().replace(/[ ]/g,"") == 'desc')
+                    $("input[name='ztktnew']").removeClass("ztktnew").addClass("new_top");
+                else{
+                    $("input[name='ztktnew']").removeClass("ztktnew").addClass("new_dow");
+                }
+            }
+        });
+        var orderBy = function(byName){
+            var order = orderInput.val();
+            orderBySpecial.val(byName);
+            if(order.replace(/[ ]/g,"") == "desc"){
+                orderInput.val("");
+            }else{
+                orderInput.val("desc");
+            }
+            $("form[name='specialList']").submit();
+        };
+        var specialLook = function(specialId){
+            location.href="http://www.gdedu.tv:80/special!specialInfo.action?gdeduSpecial.id="+specialId;
+        };
+    </script>
+    <style type="text/css">
+        .hot_top {
+            width: 68px;
+            height: 30px;
+            background: url(web/images/neiye/hot-top.jpg) no-repeat;
+        }
+        .onclick_color{
+            color:#3cac05;
+        }
+        .hot_dow {
+            width: 68px;
+            height: 30px;
+            background: url(web/images/neiye/hostest_btn.jpg) no-repeat;
+        }
+
+        .new_top {
+            width: 60px;
+            height: 30px;
+            background: url(web/images/neiye/new-top.jpg) no-repeat;
+        }
+
+        .new_dow {
+            width: 60px;
+            height: 30px;
+            background: url(web/images/neiye/zuixing_btn.jpg) no-repeat;
+        }
+    </style>
+</head>
+<body>
+<input type="hidden" id="tabWeb" value="1"/>
+<!-- <input type="hidden" id="tabWebs" value="3"/> -->
+<div class="wrapper">
+
+    <style type="text/css">
+        .ny-header{ height:68px; width:100%; background:url(images/neiye/h_bg.jpg) repeat-x;font-family: '微软雅黑';font-size: 12px;}
+        .ny-header-c { width:1200px; margin:0 auto; overflow:hidden; }
+        .logo3 { width:196px;  float:left; margin-top: 18px}
+        .ny-navlist { float:left; margin-left:30px}
+        .ny-navlist li{ display:block; height:68px; float:left; line-height:68px;}
+        .ny-navlist li:hover {background:#1e2c39;}
+        .ny-navlist li a{ display:block; font-size:14px; color:#fff; padding:0 12px; height:68px; }
+        .ny-navlist li.nav-l { width:94px; height:48px; line-height:12px; padding-top:20px; text-align:center;}
+        .ny-navlist li.nav-l a{ display:block; width:100%; float:left; color:#febf0f; padding:0;  }
+        .ny-navlist li.nav-l a font { width:94px; display:block; float:left; text-align:center; line-height:16px}
+        .ny-search { float:left; background:#fff; height:32px; border-radius: 40px 40px 40px 40px; margin-top:20px; margin-left:57px;}
+        .ny-search-text { display:block; width:59px; padding-left:10px; float:left; height:32px; background:none }
+        .ny-search-btn { display:block; width:23px; float:left; background:url(images/neiye/coin2.png) no-repeat left center;  height:32px; cursor:pointer}
+        .persion-center { float:right; background:url(images/neiye/coin1.png) no-repeat 2px 2px; width:58px; height:30px; line-height:30px; padding-left:32px; margin-top:20px;}
+        .persion-center a{ color:#fff; font-family:"宋体";}
+
+        .header_current{background:#1e2c39;}
+    </style>
+    <script type="text/javascript">
+        $(function(){
+            var cur = $("#tabWeb").val();
+            //alert("cur:"+cur);
+            $(".ny-navlist li").each(function(i){
+                if(cur==i){
+                    $(".ny-navlist li").eq(i).addClass("header_current");
+                }else{
+                    $(".ny-navlist li").eq(i).removeClass("header_current");
+                }
+            });
+
+            $(".search_txt").focus(function(){
+                if($(this).val() == '搜索'){
+                    $(this).val("");
+                }
+            });
+            $(".search_txt").focusout(function(){
+                if($(this).val() == ''){
+                    $(this).val("搜索");
+                }
+            });
+        })
+
+        function searchInfo(){
+            var search = $(".search_txt").val();
+            location.href = "subject!videoList.action?search="+search;
+        }
+    </script>
+    <!-- 头部 -->
+    <div class="ny-header">
+        <div class="ny-header-c">
+            <div class="logo3" onclick="location.href=''">
+                <img src="/images/neiye/logo3.png" width="196" height="35" />
+            </div>
+            <ul class="ny-navlist">
+                <li><a href="">首页</a></li>
+                <li><a href="/special!specialList.action">兴趣课堂</a></li>
+                <li><a href="/tieBa!getIndex.action?iframeUrl=">点课吧</a></li>
+                <li><a href="/special!ceeList.action">中高考微课</a></li>
+                <li><a href="/special!synchroList.action">同步课程</a></li>
+                <li><a href="/magazine!toMaga.action">亲子频道</a></li>
+                <li><a href="http://school.gdedu.tv/gdedu/login?user_id=&ciphertext=" target="_blank">校园影视</a></li>
+                <li class="nav-l"><a href="/team!wIndex.action"><font>一师一优课</font><font>一课一名师</font></a></li>
+                <li><a href="/extra_list.action"  >更多应用</a></li>
+            </ul>
+
+            <div class="ny-search">
+                <input class="ny-search-text search_txt" value="搜索" type="text">
+                <input class="ny-search-btn" type="button" onclick="searchInfo()">
+            </div>
+            <div class="persion-center">
+                <a href="javascript:isLogin('/personalcenter!zuopin2016.action?offset=1');">个人中心</a>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container" style="/*margin-top:40px;*/background:#fff;width:1002px;">
+        <div class="tabbtn tabbtn_mskc">
+            <h2>兴趣课堂</h2>
+            <div class="tabbtn_ul_p" >
+                <ul class="tabbtn_ul">
+                    <li>
+                        <a onclick="submitLog(0)" class="onclick_color">全部</a>
+                    </li>
+
+                    <li>
+                        <a onclick="submitLog(35)" class="">小学</a>
+                    </li>
+
+                    <li>
+                        <a onclick="submitLog(36)" class="">初中</a>
+                    </li>
+
+                    <li>
+                        <a onclick="submitLog(37)" class="">高中</a>
+                    </li>
+
+                </ul>
+                <div class="curBg"></div>
+            </div>
+
+        </div>
+        <!--   tab button end  -->
+
+        <div class="paixu">
+            <input type="button" class="ztktnew" name="ztktnew"
+                   onclick="orderBy('createTime')" value="" /> <input type="button"
+                                                                      class="ztkthot" name="ztkthot" onclick="orderBy('hot')" value="" />
+        </div>
+        <form action="http://www.gdedu.tv:80/special!specialList.action" method="post"
+              id="special" name="specialList">
+            <input type="hidden" name="order" value=" desc" /> <input
+                type="hidden" name="gradeId" value=" 0" /> <input
+                type="hidden" name="orderBySpecial" value=" createTime" />
+            <div class="ztkt_wrap">
+
+                <div class="ztkt_box">
+
+                    <img src="/images/images3/new_02.png" width="50" class="ztkt_box_new"/>
+
+                    <a href="special!specialInfo.action?gdeduSpecial.id=987" target="_blank">
+                        <img src="http://node1.file.eduitv.cn/itv/jinhong/match/special/1543444967357.jpg" style="cursor: pointer;" width="220px" height="154"/>
+                    </a>
+                    <dl>
+                        <dt class="out_display" title="四年级数学上册 黄冈名师课堂 除数是两位数的除法">
+                            <a href="special!specialInfo.action?gdeduSpecial.id=987" target="_blank">四年级数学上册 黄冈名师课堂 除数是两位数的除法
+                            </a>
+                        </dt>
+                        <dd>更新日期：
+
+                            2018-12-13 </dd>
+                        <dd>年级：四年级&nbsp&nbsp&nbsp&nbsp学科：数学 </dd>
+                        <dd>播放次数：6次 </dd>
+                        <dd>
+                            <span>内容简介：</span> <p class="out_display" style="display:block; width: 165px; float: left">  四年级数学上册 黄冈名师课堂 除数是两位数的除法  </p>
+                        </dd>
+                    </dl>
+
+                    <div class="ztkt_box_c">
+
+
+
+                        <a href="special!specialInfo.action?gdeduSpecial.id=987" target="_blank">
+                            <input type="button" name="buttonSpecial" value="" />
+                        </a>
+                    </div>
+                </div>
+
+                <div class="ztkt_box">
+
+                    <img src="/images/images3/new_02.png" width="50" class="ztkt_box_new"/>
+
+                    <a href="special!specialInfo.action?gdeduSpecial.id=986" target="_blank">
+                        <img src="http://node1.file.eduitv.cn/itv/jinhong/match/special/1542928797836.jpg" style="cursor: pointer;" width="220px" height="154"/>
+                    </a>
+                    <dl>
+                        <dt class="out_display" title="踢踢和奇奇之魔力课堂   婆婆的忘忧草">
+                            <a href="special!specialInfo.action?gdeduSpecial.id=986" target="_blank">踢踢和奇奇之魔力课堂   婆婆的忘忧草
+                            </a>
+                        </dt>
+                        <dd>更新日期：
+
+                            2018-12-07 </dd>
+                        <dd>年级：&nbsp&nbsp&nbsp&nbsp学科： </dd>
+                        <dd>播放次数：0次 </dd>
+                        <dd>
+                            <span>内容简介：</span> <p class="out_display" style="display:block; width: 165px; float: left">  踢踢和奇奇之魔力课堂   婆婆的忘忧草  </p>
+                        </dd>
+                    </dl>
+
+                    <div class="ztkt_box_c">
+
+
+
+                        <a href="special!specialInfo.action?gdeduSpecial.id=986" target="_blank">
+                            <input type="button" name="buttonSpecial" value="" />
+                        </a>
+                    </div>
+                </div>
+
+                <div class="ztkt_box">
+
+                    <a href="special!specialInfo.action?gdeduSpecial.id=985" target="_blank">
+                        <img src="http://node1.file.eduitv.cn/itv/jinhong/match/special/1542928701562.jpg" style="cursor: pointer;" width="220px" height="154"/>
+                    </a>
+                    <dl>
+                        <dt class="out_display" title="安徒生童话 卖火柴的小女孩">
+                            <a href="special!specialInfo.action?gdeduSpecial.id=985" target="_blank">安徒生童话 卖火柴的小女孩
+                            </a>
+                        </dt>
+                        <dd>更新日期：
+
+                            2018-12-07 </dd>
+                        <dd>年级：&nbsp&nbsp&nbsp&nbsp学科： </dd>
+                        <dd>播放次数：28次 </dd>
+                        <dd>
+                            <span>内容简介：</span> <p class="out_display" style="display:block; width: 165px; float: left">  安徒生童话 卖火柴的小女孩  </p>
+                        </dd>
+                    </dl>
+
+                    <div class="ztkt_box_c">
+
+
+
+                        <a href="special!specialInfo.action?gdeduSpecial.id=985" target="_blank">
+                            <input type="button" name="buttonSpecial" value="" />
+                        </a>
+                    </div>
+                </div>
+
+                <div class="ztkt_box">
+
+                    <a href="special!specialInfo.action?gdeduSpecial.id=984" target="_blank">
+                        <img src="http://node1.file.eduitv.cn/itv/jinhong/match/special/1542325570619.jpg" style="cursor: pointer;" width="220px" height="154"/>
+                    </a>
+                    <dl>
+                        <dt class="out_display" title="八米小镇育儿微课堂">
+                            <a href="special!specialInfo.action?gdeduSpecial.id=984" target="_blank">八米小镇育儿微课堂
+                            </a>
+                        </dt>
+                        <dd>更新日期：
+
+                            2018-11-30 </dd>
+                        <dd>年级：&nbsp&nbsp&nbsp&nbsp学科： </dd>
+                        <dd>播放次数：5次 </dd>
+                        <dd>
+                            <span>内容简介：</span> <p class="out_display" style="display:block; width: 165px; float: left">  八米小镇育儿微课堂  </p>
+                        </dd>
+                    </dl>
+
+                    <div class="ztkt_box_c">
+
+
+
+                        <a href="special!specialInfo.action?gdeduSpecial.id=984" target="_blank">
+                            <input type="button" name="buttonSpecial" value="" />
+                        </a>
+                    </div>
+                </div>
+
+                <div class="ztkt_box">
+
+                    <a href="special!specialInfo.action?gdeduSpecial.id=983" target="_blank">
+                        <img src="http://node1.file.eduitv.cn/itv/jinhong/match/special/1542325419311.jpg" style="cursor: pointer;" width="220px" height="154"/>
+                    </a>
+                    <dl>
+                        <dt class="out_display" title="六年级数学上册 黄冈名师课堂 圆的认识及有关的计算">
+                            <a href="special!specialInfo.action?gdeduSpecial.id=983" target="_blank">六年级数学上册 黄冈名师课堂 圆的认识及有关的计算
+                            </a>
+                        </dt>
+                        <dd>更新日期：
+
+                            2018-11-30 </dd>
+                        <dd>年级：六年级&nbsp&nbsp&nbsp&nbsp学科：数学 </dd>
+                        <dd>播放次数：7次 </dd>
+                        <dd>
+                            <span>内容简介：</span> <p class="out_display" style="display:block; width: 165px; float: left">  六年级数学上册 黄冈名师课堂 圆的认识及有关的计算  </p>
+                        </dd>
+                    </dl>
+
+                    <div class="ztkt_box_c">
+
+
+
+                        <a href="special!specialInfo.action?gdeduSpecial.id=983" target="_blank">
+                            <input type="button" name="buttonSpecial" value="" />
+                        </a>
+                    </div>
+                </div>
+
+                <div class="ztkt_box">
+
+                    <a href="special!specialInfo.action?gdeduSpecial.id=982" target="_blank">
+                        <img src="http://node1.file.eduitv.cn/itv/jinhong/match/special/1542325312262.jpg" style="cursor: pointer;" width="220px" height="154"/>
+                    </a>
+                    <dl>
+                        <dt class="out_display" title="水浒传儿童版  石秀勇猛劫法场">
+                            <a href="special!specialInfo.action?gdeduSpecial.id=982" target="_blank">水浒传儿童版  石秀勇猛劫法场
+                            </a>
+                        </dt>
+                        <dd>更新日期：
+
+                            2018-11-30 </dd>
+                        <dd>年级：&nbsp&nbsp&nbsp&nbsp学科： </dd>
+                        <dd>播放次数：1次 </dd>
+                        <dd>
+                            <span>内容简介：</span> <p class="out_display" style="display:block; width: 165px; float: left">  水浒传儿童版  石秀勇猛劫法场  </p>
+                        </dd>
+                    </dl>
+
+                    <div class="ztkt_box_c">
+
+
+
+                        <a href="special!specialInfo.action?gdeduSpecial.id=982" target="_blank">
+                            <input type="button" name="buttonSpecial" value="" />
+                        </a>
+                    </div>
+                </div>
+
+                <div class="ztkt_box">
+
+                    <a href="special!specialInfo.action?gdeduSpecial.id=981" target="_blank">
+                        <img src="http://node1.file.eduitv.cn/itv/jinhong/match/special/1541107251124.jpg" style="cursor: pointer;" width="220px" height="154"/>
+                    </a>
+                    <dl>
+                        <dt class="out_display" title="百科故事会 外星人来地球">
+                            <a href="special!specialInfo.action?gdeduSpecial.id=981" target="_blank">百科故事会 外星人来地球
+                            </a>
+                        </dt>
+                        <dd>更新日期：
+
+                            2018-11-16 </dd>
+                        <dd>年级：&nbsp&nbsp&nbsp&nbsp学科： </dd>
+                        <dd>播放次数：14次 </dd>
+                        <dd>
+                            <span>内容简介：</span> <p class="out_display" style="display:block; width: 165px; float: left">  百科故事会 外星人来地球  </p>
+                        </dd>
+                    </dl>
+
+                    <div class="ztkt_box_c">
+
+
+
+                        <a href="special!specialInfo.action?gdeduSpecial.id=981" target="_blank">
+                            <input type="button" name="buttonSpecial" value="" />
+                        </a>
+                    </div>
+                </div>
+
+                <div class="ztkt_box">
+
+                    <a href="special!specialInfo.action?gdeduSpecial.id=980" target="_blank">
+                        <img src="http://node1.file.eduitv.cn/itv/jinhong/match/special/1541106894913.jpg" style="cursor: pointer;" width="220px" height="154"/>
+                    </a>
+                    <dl>
+                        <dt class="out_display" title="幼儿数学启蒙周课 第一期 10以内加减乘除 ">
+                            <a href="special!specialInfo.action?gdeduSpecial.id=980" target="_blank">幼儿数学启蒙周课 第一期 10以内加减乘除
+                            </a>
+                        </dt>
+                        <dd>更新日期：
+
+                            2018-11-16 </dd>
+                        <dd>年级：一年级&nbsp&nbsp&nbsp&nbsp学科： </dd>
+                        <dd>播放次数：17次 </dd>
+                        <dd>
+                            <span>内容简介：</span> <p class="out_display" style="display:block; width: 165px; float: left">  幼儿数学启蒙周课 第一期 10以内加减乘除   </p>
+                        </dd>
+                    </dl>
+
+                    <div class="ztkt_box_c">
+
+
+
+                        <a href="special!specialInfo.action?gdeduSpecial.id=980" target="_blank">
+                            <input type="button" name="buttonSpecial" value="" />
+                        </a>
+                    </div>
+                </div>
+
+                <div class="ztkt_box">
+
+                    <a href="special!specialInfo.action?gdeduSpecial.id=979" target="_blank">
+                        <img src="http://node1.file.eduitv.cn/itv/jinhong/match/special/1539898156380.jpg" style="cursor: pointer;" width="220px" height="154"/>
+                    </a>
+                    <dl>
+                        <dt class="out_display" title="巧虎生活认知 小小预报员">
+                            <a href="special!specialInfo.action?gdeduSpecial.id=979" target="_blank">巧虎生活认知 小小预报员
+                            </a>
+                        </dt>
+                        <dd>更新日期：
+
+                            2018-11-02 </dd>
+                        <dd>年级：&nbsp&nbsp&nbsp&nbsp学科： </dd>
+                        <dd>播放次数：13次 </dd>
+                        <dd>
+                            <span>内容简介：</span> <p class="out_display" style="display:block; width: 165px; float: left">  巧虎生活认知 小小预报员  </p>
+                        </dd>
+                    </dl>
+
+                    <div class="ztkt_box_c">
+
+
+
+                        <a href="special!specialInfo.action?gdeduSpecial.id=979" target="_blank">
+                            <input type="button" name="buttonSpecial" value="" />
+                        </a>
+                    </div>
+                </div>
+
+                <div class="ztkt_box">
+
+                    <a href="special!specialInfo.action?gdeduSpecial.id=978" target="_blank">
+                        <img src="http://node1.file.eduitv.cn/itv/jinhong/match/special/1539898004584.jpg" style="cursor: pointer;" width="220px" height="154"/>
+                    </a>
+                    <dl>
+                        <dt class="out_display" title="黄冈学霸 四年级数学上册 三位数乘两位数">
+                            <a href="special!specialInfo.action?gdeduSpecial.id=978" target="_blank">黄冈学霸 四年级数学上册 三位数乘两位数
+                            </a>
+                        </dt>
+                        <dd>更新日期：
+
+                            2018-11-02 </dd>
+                        <dd>年级：四年级&nbsp&nbsp&nbsp&nbsp学科：数学 </dd>
+                        <dd>播放次数：9次 </dd>
+                        <dd>
+                            <span>内容简介：</span> <p class="out_display" style="display:block; width: 165px; float: left">  黄冈学霸 四年级数学上册 三位数乘两位数  </p>
+                        </dd>
+                    </dl>
+
+                    <div class="ztkt_box_c">
+
+
+
+                        <a href="special!specialInfo.action?gdeduSpecial.id=978" target="_blank">
+                            <input type="button" name="buttonSpecial" value="" />
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+
+        <div class="clear"></div>
+        <div id="page"
+             style="height:100px;margin:0px auto;text-align: center;width: 80%;" >
+            <span  style="display:block; width:65px; height:31px; line-height:31px; text-align:center; float:left; background: url(img/pagelistbg.gif) no-repeat; cursor:pointer;color:gray;">首页</span><span style="display:block; width:65px; height:31px; line-height:31px; text-align:center; float:left; background: url(img/pagelistbg.gif) no-repeat; cursor:pointer;margin-right:5px;color:gray;">上一页</span><a style='display:block; padding:0 8px; height:25px; line-height:25px; border:none; color:#ff7d00;float:left; margin:2px 3px 0px 0px;'>1</a>
+            <a href='javascript:currentOffset(2)' style='display:block;padding:0 8px; height:25px; line-height:25px; border:solid #cfcfcf 1px; float:left; margin:2px 3px 0px 0px;'>2</a>
+            <a href='javascript:currentOffset(3)' style='display:block;padding:0 8px; height:25px; line-height:25px; border:solid #cfcfcf 1px; float:left; margin:2px 3px 0px 0px;'>3</a>
+            <a href='javascript:currentOffset(4)' style='display:block;padding:0 8px; height:25px; line-height:25px; border:solid #cfcfcf 1px; float:left; margin:2px 3px 0px 0px;'>4</a>
+            <a href='javascript:currentOffset(5)' style='display:block;padding:0 8px; height:25px; line-height:25px; border:solid #cfcfcf 1px; float:left; margin:2px 3px 0px 0px;'>5</a>
+            <a href='javascript:currentOffset(6)' style='display:block;padding:0 8px; height:25px; line-height:25px; border:solid #cfcfcf 1px; float:left; margin:2px 3px 0px 0px;'>6</a>
+            <a href='javascript:currentOffset(7)' style='display:block;padding:0 8px; height:25px; line-height:25px; border:solid #cfcfcf 1px; float:left; margin:2px 3px 0px 0px;'>7</a>
+            <a href='javascript:currentOffset(8)' style='display:block;padding:0 8px; height:25px; line-height:25px; border:solid #cfcfcf 1px; float:left; margin:2px 3px 0px 0px;'>8</a>
+            <a href='javascript:currentOffset(9)' style='display:block;padding:0 8px; height:25px; line-height:25px; border:solid #cfcfcf 1px; float:left; margin:2px 3px 0px 0px;'>9</a>
+            <a href='javascript:currentOffset(10)' style='display:block;padding:0 8px; height:25px; line-height:25px; border:solid #cfcfcf 1px; float:left; margin:2px 3px 0px 0px;'>10</a>
+            <script>var currentOffset = function(current){	var formName =document.getElementById('formName').value;	var input = "<input type='hidden' name='offset' value='' />";	$('#'+formName).append(input);	$('input[name=offset]').val(current);	$('#'+formName).submit();}</script><span onclick="javascript:currentOffset(2)" style="display:block; width:65px; height:31px; line-height:31px; text-align:center; float:left; background: url(img/pagelistbg.gif) no-repeat; cursor:pointer;">下一页</span><span onclick="javascript:currentOffset(51)" style="display:block; width:65px; height:31px; line-height:31px; text-align:center; float:left; background: url(img/pagelistbg.gif) no-repeat; cursor:pointer;">尾页</span><span class='count'  style="display:block;height:31px; line-height:31px; text-align:center; float:left;  color:gray; cursor:pointer;">共51页</span> <input type="hidden" id="formName" value="special" />
+        </div>
+    </div>
+
+
+
+
+
+
+
+    <!--    版权   -->
+</div>
+
+<style type="text/css">
+    .copyright { height:250px; background:#eff2f5; overflow:hidden; border-top:solid #cde4f5 1px; }
+    .linklist { width:430px; margin:64px auto 0 auto; overflow:hidden;}
+    .linklist ul { display:block; height:32px;  margin-left:-2px}
+    .linklist ul li { display:block; float:left; line-height:32px }
+    .linklist ul li a { font-family:"宋体"; font-size:12px; color:#697b86; padding:0 11px; border-left:solid #000 1px;}
+    .copyright_con { width:495px; margin:0 auto}
+    .copyright_con p { text-align:center; font-family:"宋体"; font-size:12px; color:#333; line-height:22px; color:#697b86;}
+</style>
+<!-- 底部 -->
+<div class="copyright" id="copyright">
+    <div class="linklist">
+        <ul>
+            <li><a href="aboutus/about_us.jsp">关于我们</a></li>
+            <li><a href="aboutus/contact_us.jsp">联系我们</a></li>
+            <li><a href="aboutus/serve.jsp">服务条款</a></li>
+            <li><a href="aboutus/privacy_protection.jsp">隐私保护</a></li>
+            <li><a href="aboutus/help_center.jsp">帮助中心</a></li>
+            <li><a href="aboutus/column_intro.jsp">意见反馈</a></li>
+        </ul>
+    </div>
+    <div class="copyright_con">
+        <p>主办方：广东省教育厅</p>
+        <p>广州津虹网络传媒有限公司</span></p>
+        <p><a href="http://www.miitbeian.gov.cn/" target="_blank">粤ICP备10073251号-6</a></p>
+    </div>
+    <div style="width:300px;margin:0 auto; padding:5px 0; text-align: center;">
+        <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44010602000820"  style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+            <img src="/web/images/batb.png" style="float:left;"/>
+            <p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393; font-size: 12px;">粤公网安备 44010602000820号</p></a>
+    </div>
+
+    <div style=" text-align: center;">
+        <script>
+            var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254639277'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1254639277%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));
+        </script>
+    </div>
+
+</div>
+<!-- <script type="text/javascript">
+var setting_foot = function(){
+	var myCop = document.getElementById("copyright");
+	if(myCop.offsetTop < 700){
+		myCop.style.cssText = "position:fixed;bottom: 0;width:100%;";
+	};
+};
+window.onload = setting_foot();
+</script> -->
+
+<script type="text/javascript">
+    $(".tabbtn ul li").click(function () { $(this).addClass("current").siblings().removeClass(); })
+    $('.box2_r_b ul li').each(function(){
+        $(this).mouseover( function(){
+            $(this).addClass('on').siblings().removeClass("on");
+        });
+    });
+    $(function(){
+        var liHtml = $(".onclick_color");
+        //liHtml.addClass('current').siblings().removeClass("current");
+        var curP = liHtml.position().left,  $slider = $(".curBg");
+        $slider.animate({
+            "left":curP-15,
+            "width":66
+        },"fast");
+    });
+    //定位筛选
+    /*$('.tabbtn_ul').children("li").each(function(){
+     $(this).click( function(){
+        $(this).addClass('current').siblings().removeClass("current");
+        var curP = $(this).position().left,  $slider = $(".curBg");
+                $slider.animate({
+                  "left":curP-7,
+                  "width":66
+                },"fast");
+        })
+    });*/
+</script>
+</body>
+</html>
